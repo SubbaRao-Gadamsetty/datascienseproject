@@ -1,0 +1,32 @@
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/data_ingestion
+  download_dir: artifacts/data_ingestion
+
+
+data_validation:
+  root_dir: artifacts/data_validation
+  input_data_dir: artifacts/data_ingestion/california_housing.csv
+  STATUS_FILE: artifacts/data_validation/status.txt
+
+
+data_transformation:
+  root_dir: artifacts/data_transformation
+  data_path: artifacts/data_ingestion/california_housing.csv
+
+model_trainer:
+  root_dir: artifacts/model_trainer
+  train_data_path: artifacts/data_transformation/train.csv
+  test_data_path: artifacts/data_transformation/test.csv
+  lr_model_name: linearregressionmodel.joblib
+  dt_model_name: decisiontreemodel.joblib
+
+model_evaluation:
+  root_dir: artifacts/model_evaluation
+  test_data_path: artifacts/data_transformation/test.csv
+  lr_model_path: artifacts/model_trainer/linearregressionmodel.joblib
+  lr_metric_file_name: artifacts/model_evaluation/lr_model_metrics.json
+  dt_model_path: artifacts/model_trainer/decisiontreemodel.joblib
+  dt_metric_file_name: artifacts/model_evaluation/dt_model_metrics.json
+   

@@ -8,7 +8,7 @@ project_name="datascience"
 
 list_of_files=[
     ".gthub/workflows/.gitkeep",
-    f"src/{project_name}/__init1__.py",
+    f"src/{project_name}/__init__.py",
     f"src/{project_name}/components/__init__.py",
     f"src/{project_name}/utils/__init__.py",
     f"src/{project_name}/utils/common.py",
