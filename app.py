@@ -8,6 +8,11 @@ app = Flask(__name__)
 def health():
     return jsonify({"status": "API is up and running!"})
 
+@app.route('/train',methods=['GET'])  # route to train the pipeline
+def training():
+    os.system("python main.py")
+    return "Training Successful!" 
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
