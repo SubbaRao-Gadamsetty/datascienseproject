@@ -1,68 +1,44 @@
-name: CI/CD Pipeline
+name: Auto Deploy on Push
 
 on:
   push:
     branches: [ main ]
 
-jobs:
+env:
+  IMAGE_NAME: california-api
+  DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKER_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
 
+jobs:
   lint-test:
-    name: 🧪 Lint and Test
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
-
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.10
-
-      - name: 📦 Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+      - run: |
           pip install -r requirements.txt
           pip install flake8
+          flake8 . --max-line-length=120 --exclude=artifacts,.github,__pycache__
 
-      - name: ✅ Lint with flake8
-        run: |
-          flake8 . --max-line-length=120 --exclude=artifacts,.github
-
-  docker-build-push:
-    name: 🐳 Build and Push Docker Image
-    runs-on: ubuntu-latest
+  docker:
     needs: lint-test
-    env:
-      DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKER_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
-      IMAGE_NAME: california-api
-
+    runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
-
-      - name: 🔐 Docker login
-        run: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-
-      - name: 🐳 Build Docker image
-        run: docker build -t $DOCKER_USER/$IMAGE_NAME:latest .
-
-      - name: 🚀 Push to Docker Hub
-        run: docker push $DOCKER_USER/$IMAGE_NAME:latest
+      - uses: actions/checkout@v3
+      - run: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+      - run: docker build -t $DOCKER_USER/$IMAGE_NAME:latest .
+      - run: docker push $DOCKER_USER/$IMAGE_NAME:latest
 
   deploy:
-    name: 🚀 Deploy to EC2
+    needs: docker
     runs-on: ubuntu-latest
-    needs: docker-build-push
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
-
-      - name: 🔐 Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
+      - uses: actions/checkout@v3
+      - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-
-      - name: 🛰️ Deploy via SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} 'bash -s' < ./deploy.sh
+      - run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} \
+          "DOCKER_USER=$DOCKER_USER IMAGE_NAME=$IMAGE_NAME bash -s" < ./deploy.sh
