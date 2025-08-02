@@ -14,7 +14,7 @@ def training():
     os.system("python main.py")
     return "Training Successful!" 
 
-
+print("Training Successful!")  # Print message to console
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
