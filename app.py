@@ -14,7 +14,7 @@ def training():
     os.system("python main.py")
     return "Training Successful!" 
 
-print("Training pipeline initiated. You can now make predictions using the /predict endpoint.")
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
