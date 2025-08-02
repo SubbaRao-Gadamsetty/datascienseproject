@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import numpy as np
 from src.datascience.pipeline.prediction_pipeline import PredictionPipeline
+import os
 
 app = Flask(__name__)
 
