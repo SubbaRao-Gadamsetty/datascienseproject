@@ -95,7 +95,7 @@ class ConfigurationManager:
             dt_model_path = config.dt_model_path,
             dt_metric_file_name = config.dt_metric_file_name,
             target_column = schema.name,
-            mlflow_uri="https://dagshub.com/SubbaRao-Gadamsetty/datascienseproject.mlflow"
+            mlflow_uri="http://ec2-98-83-134-83.compute-1.amazonaws.com:5000/"
 
         )
         return model_evaluation_config

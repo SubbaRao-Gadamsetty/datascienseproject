@@ -11,16 +11,7 @@ from src.datascience.entity.config_entity import ModelEvaluationConfig
 from src.datascience.constants import *
 from src.datascience.utils.common import read_yaml, create_directories,save_json
 
-#import os
-#os.environ["MLFLOW_TRACKING_URI"]="https://dagshub.com/krishnaik06/datascienceproject.mlflow"
-#os.environ["MLFLOW_TRACKING_USERNAME"]="krishnaik06"
-#os.environ["MLFLOW_TRACKING_PASSWORD"]="7104284f1bb44ece21e0e2adb4e36a250ae3251f"
-
-os.environ["MLFLOW_TRACKING_URI"]="https://dagshub.com/SubbaRao-Gadamsetty/datascienseproject.mlflow"
-os.environ["MLFLOW_TRACKING_USERNAME"]="SubbaRao-Gadamsetty"
-os.environ["MLFLOW_TRACKING_PASSWORD"]="6fcc9fbca05a8f8bf953cfcffc025192d63336ff"
-
-
+os.environ["MLFLOW_TRACKING_URI"]="http://ec2-98-83-134-83.compute-1.amazonaws.com:5000/"
 
 class ModelEvaluation:
     def __init__(self, config: ModelEvaluationConfig):
@@ -69,6 +60,7 @@ class ModelEvaluation:
                 # please refer to the doc for more information:
                 # https://mlflow.org/docs/latest/model-registry.html#api-workflow
                 mlflow.sklearn.log_model(model, "model", registered_model_name="LinearRegressionModel")
+                #  mlflow.sklearn.log_model(model, "model")
             else:
                 mlflow.sklearn.log_model(model, "model")
         
@@ -113,6 +105,7 @@ class ModelEvaluation:
                 # please refer to the doc for more information:
                 # https://mlflow.org/docs/latest/model-registry.html#api-workflow
                 mlflow.sklearn.log_model(model, "model", registered_model_name="DecisionTreeModel")
+                # mlflow.sklearn.log_model(model, "model")
             else:
                 mlflow.sklearn.log_model(model, "model")
     
