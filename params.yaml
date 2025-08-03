@@ -1,4 +1,4 @@
-Lasso:
+LinearRegression:
   alpha: 0.2
 
 DecisionTree:

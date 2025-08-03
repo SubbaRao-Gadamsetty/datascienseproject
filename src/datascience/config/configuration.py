@@ -53,7 +53,7 @@ class ConfigurationManager:
     
     def get_model_trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
-        paramsLasso = self.params.Lasso
+        paramsLinearRegression = self.params.LinearRegression
         paramsDecisionTree = self.params.DecisionTree
         schema =  self.schema.TARGET_COLUMN
 
@@ -64,7 +64,7 @@ class ConfigurationManager:
             train_data_path = config.train_data_path,
             test_data_path = config.test_data_path,
             lr_model_name = config.lr_model_name,
-            alpha = paramsLasso.alpha,
+            alpha = paramsLinearRegression.alpha,
             dt_model_name = config.dt_model_name,
             max_depth = paramsDecisionTree.max_depth,   
             min_samples_split = paramsDecisionTree.min_samples_split,
@@ -77,7 +77,7 @@ class ConfigurationManager:
     
     def get_model_evaluation_config(self) -> ModelEvaluationConfig:
         config=self.config.model_evaluation
-        paramsLasso=self.params.Lasso
+        paramsLinearRegression=self.params.LinearRegression
         paramsDecisionTree = self.params.DecisionTree
         schema=self.schema.TARGET_COLUMN
 
@@ -86,7 +86,7 @@ class ConfigurationManager:
         model_evaluation_config=ModelEvaluationConfig(
             root_dir=config.root_dir,
             test_data_path=config.test_data_path,
-            alpha=paramsLasso.alpha,
+            alpha=paramsLinearRegression.alpha,
             max_depth = paramsDecisionTree.max_depth,   
             min_samples_split = paramsDecisionTree.min_samples_split,
             min_samples_leaf = paramsDecisionTree.min_samples_leaf,
