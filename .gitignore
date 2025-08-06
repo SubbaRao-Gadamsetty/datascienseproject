@@ -1,3 +1,6 @@
 venv/
 logs/
 mlruns/
+# Ignore everything in artifacts except data_ingestion folder
+artifacts/*
+!artifacts/data_ingestion/
