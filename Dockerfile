@@ -1,31 +1,20 @@
+# Use the official Python image from the Docker Hub
 FROM python:3.9-slim
 
+# Set the working directory
 WORKDIR /app
 
-# Install system dependencies efficiently
-RUN apt-get update && apt-get install -y \
-    gcc \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Copy requirements first for better Docker layer caching
+# Copy requirements.txt first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip cache purge
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# Add health check endpoint support
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/health || curl -f http://localhost:8080/ || exit 1
-
-# Expose the port your app runs on
+# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run the application
+# Run app.py when the container launches
 CMD ["python", "app.py"]
