@@ -94,6 +94,7 @@ jobs:
   Continuous-Deployment:
     needs: build-and-push-ecr-image
     runs-on: self-hosted
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -109,20 +110,85 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       
-      - name: Pull latest images
+      - name: Check for existing image
+        id: check-image
         run: |
-         docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          IMAGE_NAME="${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest"
+          if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "$IMAGE_NAME"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Image already exists locally"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Need to pull image"
+          fi
+      
+      - name: Pull latest images
+        if: steps.check-image.outputs.exists == 'false'
+        run: |
+          echo "Pulling latest image..."
+          docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
          
       - name: Stop and remove container if running
         run: |
-         docker ps -q --filter "name=californiaecr-api" | grep -q . && docker stop californiaecr-api && docker rm -fv californiaecr-api || true
+          if docker ps -a --format "{{.Names}}" | grep -q "californiaecr-api"; then
+            echo "Stopping existing container..."
+            docker stop californiaecr-api || true
+            docker rm californiaecr-api || true
+          else
+            echo "No existing container found"
+          fi
        
       - name: Run Docker Image to serve users
         run: |
-         docker run -d -p 8080:8080 --ipc="host" --name=californiaecr-api -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+          docker run -d \
+            -p 8080:8080 \
+            --name=californiaecr-api \
+            --memory=2g \
+            --cpus=2 \
+            --restart=unless-stopped \
+            --health-cmd="curl -f http://localhost:8080/health || exit 1" \
+            --health-interval=30s \
+            --health-timeout=10s \
+            --health-retries=3 \
+            -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' \
+            -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
+            -e 'AWS_REGION=${{ secrets.AWS_REGION }}' \
+            ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting for service to start..."
+          sleep 15
+          
+          # Check if container is running
+          if ! docker ps --format "{{.Names}}" | grep -q "californiaecr-api"; then
+            echo "Container failed to start!"
+            docker logs californiaecr-api
+            exit 1
+          fi
+          
+          # Test health endpoint (try both / and /health)
+          for i in {1..10}; do
+            if curl -f -s http://localhost:8080/ > /dev/null || curl -f -s http://localhost:8080/health > /dev/null; then
+              echo "Service is healthy!"
+              break
+            else
+              echo "Attempt $i: Service not ready, waiting..."
+              sleep 5
+            fi
+            
+            if [ $i -eq 10 ]; then
+              echo "Service failed health check after 50 seconds"
+              docker logs californiaecr-api
+              exit 1
+            fi
+          done
 
       - name: Clean previous images and containers
         run: |
-         docker system prune -f
-
-         
+          # Only remove unused images and old containers
+          docker image prune -f --filter "until=24h"
+          docker container prune -f --filter "until=24h"
+          
+          # Keep only last 3 images of our repository
+          docker images ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }} --format "{{.ID}}" | tail -n +4 | xargs -r docker rmi || true
