@@ -1,13 +1,34 @@
+# GitHub Actions Runner
+actions-runner/
+
+# Virtual Environment
 venv/
-logs/
-# Ignore everything in artifacts except data_ingestion folder
-artifacts/*
-!artifacts/data_ingestion/
-# Ignore Python cache files
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-# Ignore database files
+
+# Artifacts - Ignore everything except data_ingestion folder
+artifacts/*
+!artifacts/data_ingestion/
+
+# Database files
 *.db
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# MLflow
+mlruns/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
