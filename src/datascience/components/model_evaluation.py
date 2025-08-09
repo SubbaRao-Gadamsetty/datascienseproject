@@ -176,3 +176,5 @@ class ModelEvaluation:
                     mlflow.sklearn.log_model(model, "model")
         except Exception as e:
             logger.error(f"Failed to evaluate DT model: {e}", exc_info=True)
+
+print("ModelEvaluation class is ready for use.")
