@@ -25,13 +25,6 @@
 
 1. Login to AWS console.
 2. Create IAM user with AdministratorAccess
-	mlflowuser
-		Access key: AKIATD3BCFM6MKP462CG
-		Secret access key: 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
-	datascienseuser
-		Access key: AKIATD3BCFM6HNMB5FFT
-		Secret access key: nvg+oRfTAMRXH24zMIrLQbTnNMM0tLBlUHPwT83w
-		Default region name: us-east-1
 
 3. Export the credentials in your AWS CLI by running "aws configure"
 	install AWS CLI
@@ -43,7 +36,7 @@
 	datascienseEC2
 	datascienseKeyPair
 	Public IPv4 address: 52.207.64.161
-	Public DNS: ec2-52-207-64-161.compute-1.amazonaws.com
+	Public DNS: ec2-52-86-214-74.compute-1.amazonaws.com
 	EC2 Instance Connect
 		bash prompt will be opened with ubuntu
 
@@ -76,12 +69,9 @@ mlflow --version
 pip show boto3
 
 ## Then set aws credentials
+aws configure list
 aws configure
 
-	datascienseuser
-		Access key: AKIATD3BCFM6HNMB5FFT
-		Secret access key: nvg+oRfTAMRXH24zMIrLQbTnNMM0tLBlUHPwT83w
-		Default region name: us-east-1
 
 mlflow server \
   --host 0.0.0.0 \
@@ -92,7 +82,7 @@ mlflow server \
 
 
 #set uri in your local terminal and in your code 
-export MLFLOW_TRACKING_URI=http://ec2-52-207-64-161.compute-1.amazonaws.com:5000/
+export MLFLOW_TRACKING_URI=http://ec2-52-86-214-74.compute-1.amazonaws.com:5000/
 
 ################ ONLY RUNNING MLFLOW ################
 
@@ -110,9 +100,45 @@ mlflow server \
   --port 5000 \
   --default-artifact-root s3://datasciensebuket
   
-export MLFLOW_TRACKING_URI=http://ec2-98-83-134-83.compute-1.amazonaws.com:5000/
 
 
+ONLY FOR REF
+export MLFLOW_TRACKING_URI=http://ec2-52-86-214-74.compute-1.amazonaws.com:5000/
+
+################ ECR  SECOND TIME ################
+docker --version
+docker ps
+
+ls -la ~/actions-runner
+cd ~/actions-runner
+./run.sh
+
+-----
+ECR
+-----
+	214415059772.dkr.ecr.us-east-1.amazonaws.com/datascienseproject
+
+-----
+EC2
+-----
+	datasciensewebserver
+		IPV4
+			52.203.118.11
+		PUBLIC DNS
+			ec2-52-203-118-11.compute-1.amazonaws.com
+		datascienseKeyPair.pem
+
+
+
+
+
+
+
+
+
+
+
+#### Below steps are for backup and should be removed later
 # Docker steps
 
 
@@ -122,7 +148,7 @@ dckr_pat_OKcIBCezgIgvSlpzDSiUx_A8tOg
 
 > Create EC2 instance + generate key value pairs
 
-	ec2-54-159-123-180.compute-1.amazonaws.com
+	ec2-52-86-214-74.compute-1.amazonaws.com
 
 > Generate new token in docker (
 
@@ -138,6 +164,6 @@ docker tag california-api subbaraogadamsetty/california-api:latest
 docker login
 docker push subbaraogadamsetty/california-api:latest
 
-ssh -i californiahousingkeypair.pem ec2-54-159-123-180.compute-1.amazonaws.com
+ssh -i californiahousingkeypair.pem ec2-52-86-214-74.compute-1.amazonaws.com
 docker pull subbaraogadamsetty/california-api:latest
 docker run -d -p 8080:8080 --name california-api subbaraogadamsetty/california-api:latest
