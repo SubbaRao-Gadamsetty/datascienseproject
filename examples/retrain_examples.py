@@ -7,7 +7,7 @@ import requests
 import json
 
 # API base URL
-BASE_URL = "http://localhost:5050"
+BASE_URL = "http://localhost:8080"
 
 def send_single_training_sample():
     """Send a single training sample for retraining"""

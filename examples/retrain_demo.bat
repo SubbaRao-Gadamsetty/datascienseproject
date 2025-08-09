@@ -2,7 +2,7 @@
 echo 🚀 California Housing Model Retraining Demo
 echo ==================================================
 
-set BASE_URL=http://localhost:5050
+set BASE_URL=http://localhost:8080
 
 echo.
 echo 1️⃣ Sending single training sample...
