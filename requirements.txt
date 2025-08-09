@@ -17,5 +17,4 @@ boto3
 pydantic
 prometheus_client
 dvc-s3
-flask
 awscli
