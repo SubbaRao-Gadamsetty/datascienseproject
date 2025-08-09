@@ -1,25 +1,22 @@
-# Use the official Python image from the Docker Hub
-FROM python:3.8-slim
+FROM python:3.9-slim
 
-# Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Install system dependencies (rarely change)
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
 COPY requirements.txt .
 
-# Update package lists and install system dependencies
-RUN apt-get update -y && \
-    apt-get install -y awscli ffmpeg libsm6 libxext6 unzip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Install Python packages
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copy application code last
 COPY . .
 
-# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run app.py when the container launches
 CMD ["python", "app.py"]
