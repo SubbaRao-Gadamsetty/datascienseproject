@@ -1,7 +1,13 @@
 venv/
 logs/
-mlruns/
 # Ignore everything in artifacts except data_ingestion folder
 artifacts/*
 !artifacts/data_ingestion/
-awsdetails /
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+# Ignore database files
+*.db
