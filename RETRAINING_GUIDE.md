@@ -84,19 +84,19 @@ single_sample = {
     "MedHouseValue": 4.526
 }
 
-response = requests.post("http://localhost:8080/retrain", json=single_sample)
+response = requests.post("http://localhost:5050/retrain", json=single_sample)
 print(response.json())
 
 # Multiple samples
 multiple_samples = [single_sample, another_sample, ...]
-response = requests.post("http://localhost:8080/retrain", json=multiple_samples)
+response = requests.post("http://localhost:5050/retrain", json=multiple_samples)
 ```
 
 ### 2. cURL Example
 
 ```bash
 # Single sample
-curl -X POST http://localhost:8080/retrain \
+curl -X POST http://localhost:5050/retrain \
   -H "Content-Type: application/json" \
   -d '{
     "MedInc": 8.3252,
@@ -111,7 +111,7 @@ curl -X POST http://localhost:8080/retrain \
   }'
 
 # Check status
-curl -X GET http://localhost:8080/retrain/status
+curl -X GET http://localhost:5050/retrain/status
 ```
 
 ### 3. PowerShell Example
@@ -130,7 +130,7 @@ $data = @{
 }
 
 $jsonData = $data | ConvertTo-Json
-Invoke-RestMethod -Uri "http://localhost:8080/retrain" -Method POST -Body $jsonData -ContentType "application/json"
+Invoke-RestMethod -Uri "http://localhost:5050/retrain" -Method POST -Body $jsonData -ContentType "application/json"
 ```
 
 ## Data Collection Strategies
