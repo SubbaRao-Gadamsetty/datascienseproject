@@ -14,7 +14,7 @@ from src.datascience.constants import *
 from src.datascience.utils.common import read_yaml, create_directories, save_json
 from src.datascience import logger
 
-os.environ["MLFLOW_TRACKING_URI"] = "http://ec2-3-91-86-132.compute-1.amazonaws.com:5000/"
+os.environ["MLFLOW_TRACKING_URI"] = "http://ec2-52-55-105-249.compute-1.amazonaws.com:5000/"
 logger.info('Set MLFLOW_TRACKING_URI environment variable.')
 
 # SQLite setup for logging predictions

@@ -36,7 +36,7 @@
 	datascienseEC2
 	datascienseKeyPair
 	Public IPv4 address: 52.207.64.161
-	Public DNS: ec2-3-91-86-132.compute-1.amazonaws.com
+	Public DNS: ec2-52-55-105-249.compute-1.amazonaws.com
 	EC2 Instance Connect
 		bash prompt will be opened with ubuntu
 
@@ -85,29 +85,13 @@ mlflow server \
 
 
 #set uri in your local terminal and in your code 
-export MLFLOW_TRACKING_URI=http://ec2-3-91-86-132.compute-1.amazonaws.com:5000/
+export MLFLOW_TRACKING_URI=http://ec2-52-55-105-249.compute-1.amazonaws.com:5000/
 
-################ ONLY RUNNING MLFLOW (SECOND TIME) ################
-
-cd mlflow
-
-pipenv shell
-
-mlflow --version
-
-pip show boto3
-
-aws s3 ls
-
-mlflow server \
-  --host 0.0.0.0 \
-  --port 5000 \
-  --default-artifact-root s3://datasciensebuket
-  
+###################################
 
 
 ONLY FOR REF
-export MLFLOW_TRACKING_URI=http://ec2-3-91-86-132.compute-1.amazonaws.com:5000/
+export MLFLOW_TRACKING_URI=http://ec2-52-55-105-249.compute-1.amazonaws.com:5000/
 
 ## Docker Setup In EC2 commands to be Executed
 
@@ -152,11 +136,29 @@ AWS_SECRET_ACCESS_KEY=
 
 AWS_REGION = us-east-1
 
-AWS_ECR_LOGIN_URI = demo>>  566373416292.dkr.ecr.ap-south-1.amazonaws.com
+AWS_ECR_LOGIN_URI = demo>>  214415059772.dkr.ecr.us-east-1.amazonaws.com/datascienseecr
 
 ECR_REPOSITORY_NAME = datascienseecr
 
 
+
+################ ONLY RUNNING MLFLOW (SECOND TIME) ################
+
+cd mlflow
+
+pipenv shell
+
+mlflow --version
+
+pip show boto3
+
+aws s3 ls
+
+mlflow server \
+  --host 0.0.0.0 \
+  --port 5000 \
+  --default-artifact-root s3://datasciensebuket
+  
 
 ################ ECR  SECOND TIME ################
 docker --version
@@ -165,6 +167,7 @@ docker ps
 ls -la ~/actions-runner
 cd ~/actions-runner
 ./run.sh
+
 
 -----
 ECR
@@ -201,7 +204,7 @@ dckr_pat_OKcIBCezgIgvSlpzDSiUx_A8tOg
 
 > Create EC2 instance + generate key value pairs
 
-	ec2-3-91-86-132.compute-1.amazonaws.com
+	ec2-52-55-105-249.compute-1.amazonaws.com
 
 > Generate new token in docker (
 
@@ -217,6 +220,6 @@ docker tag california-api subbaraogadamsetty/california-api:latest
 docker login
 docker push subbaraogadamsetty/california-api:latest
 
-ssh -i californiahousingkeypair.pem ec2-3-91-86-132.compute-1.amazonaws.com
+ssh -i californiahousingkeypair.pem ec2-52-55-105-249.compute-1.amazonaws.com
 docker pull subbaraogadamsetty/california-api:latest
 docker run -d -p 8080:8080 --name california-api subbaraogadamsetty/california-api:latest
