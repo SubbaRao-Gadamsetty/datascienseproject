@@ -13,6 +13,7 @@ types-PyYAML
 Flask
 Flask-Cors
 pytest
+pydantic
 boto3
 prometheus_client
 dvc-s3
