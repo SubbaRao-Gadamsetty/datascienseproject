@@ -14,7 +14,7 @@ from src.datascience.constants import *
 from src.datascience.utils.common import read_yaml, create_directories, save_json
 from src.datascience import logger
 
-os.environ["MLFLOW_TRACKING_URI"] = "http://ec2-3-84-122-225.compute-1.amazonaws.com:5000/"
+os.environ["MLFLOW_TRACKING_URI"] = "http://ec2-13-216-215-48.compute-1.amazonaws.com:5000/"
 logger.info('Set MLFLOW_TRACKING_URI environment variable.')
 
 # SQLite setup for logging predictions
@@ -109,8 +109,7 @@ class ModelEvaluation:
 
                 if tracking_url_type_store != "file":
                     logger.info("Registering model in MLflow Model Registry.")
-                    #mlflow.sklearn.log_model(model, "model", registered_model_name="LinearRegressionModel")
-                    mlflow.sklearn.log_model(model, "model")
+                    mlflow.sklearn.log_model(model, "model", registered_model_name="LinearRegressionModel")
                 else:
                     logger.info("Logging model to MLflow without registry.")
                     mlflow.sklearn.log_model(model, "model")
@@ -171,8 +170,7 @@ class ModelEvaluation:
 
                 if tracking_url_type_store != "file":
                     logger.info("Registering model in MLflow Model Registry.")
-                    #mlflow.sklearn.log_model(model, "model", registered_model_name="DecisionTreeModel")
-                    mlflow.sklearn.log_model(model, "model")
+                    mlflow.sklearn.log_model(model, "model", registered_model_name="DecisionTreeModel")
                 else:
                     logger.info("Logging model to MLflow without registry.")
                     mlflow.sklearn.log_model(model, "model")
