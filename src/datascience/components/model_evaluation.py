@@ -109,7 +109,8 @@ class ModelEvaluation:
 
                 if tracking_url_type_store != "file":
                     logger.info("Registering model in MLflow Model Registry.")
-                    mlflow.sklearn.log_model(model, "model", registered_model_name="LinearRegressionModel")
+                    #mlflow.sklearn.log_model(model, "model", registered_model_name="LinearRegressionModel")
+                    mlflow.sklearn.log_model(model, "model")
                 else:
                     logger.info("Logging model to MLflow without registry.")
                     mlflow.sklearn.log_model(model, "model")
@@ -170,7 +171,8 @@ class ModelEvaluation:
 
                 if tracking_url_type_store != "file":
                     logger.info("Registering model in MLflow Model Registry.")
-                    mlflow.sklearn.log_model(model, "model", registered_model_name="DecisionTreeModel")
+                    #mlflow.sklearn.log_model(model, "model", registered_model_name="DecisionTreeModel")
+                    mlflow.sklearn.log_model(model, "model")
                 else:
                     logger.info("Logging model to MLflow without registry.")
                     mlflow.sklearn.log_model(model, "model")
