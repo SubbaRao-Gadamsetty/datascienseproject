@@ -36,9 +36,12 @@
 	datascienseEC2
 	datascienseKeyPair
 	Public IPv4 address: 52.207.64.161
-	Public DNS: ec2-13-216-215-48.compute-1.amazonaws.com
+	Public DNS: ec2-3-91-86-132.compute-1.amazonaws.com
 	EC2 Instance Connect
 		bash prompt will be opened with ubuntu
+
+	ECR:
+		214415059772.dkr.ecr.us-east-1.amazonaws.com/datascienseecr
 
 Run the following command on EC2 machine
 ```bash
@@ -82,9 +85,9 @@ mlflow server \
 
 
 #set uri in your local terminal and in your code 
-export MLFLOW_TRACKING_URI=http://ec2-13-216-215-48.compute-1.amazonaws.com:5000/
+export MLFLOW_TRACKING_URI=http://ec2-3-91-86-132.compute-1.amazonaws.com:5000/
 
-################ ONLY RUNNING MLFLOW ################
+################ ONLY RUNNING MLFLOW (SECOND TIME) ################
 
 cd mlflow
 
@@ -94,6 +97,7 @@ mlflow --version
 
 pip show boto3
 
+aws s3 ls
 
 mlflow server \
   --host 0.0.0.0 \
@@ -103,7 +107,56 @@ mlflow server \
 
 
 ONLY FOR REF
-export MLFLOW_TRACKING_URI=http://ec2-13-216-215-48.compute-1.amazonaws.com:5000/
+export MLFLOW_TRACKING_URI=http://ec2-3-91-86-132.compute-1.amazonaws.com:5000/
+
+## Docker Setup In EC2 commands to be Executed
+
+#optinal
+
+sudo apt-get update -y
+
+sudo apt-get upgrade
+
+#required
+
+curl -fsSL https://get.docker.com -o get-docker.sh
+
+sudo sh get-docker.sh
+
+sudo usermod -aG docker ubuntu
+
+newgrp docker
+
+## Github - Self-hosted runner
+
+mkdir actions-runner && cd actions-runner
+
+curl -o actions-runner-linux-x64-2.327.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.327.1/actions-runner-linux-x64-2.327.1.tar.gz
+
+echo "d68ac1f500b747d1271d9e52661c408d56cffd226974f68b7dc813e30b9e0575  actions-runner-linux-x64-2.327.1.tar.gz" | shasum -a 256 -c
+
+tar xzf ./actions-runner-linux-x64-2.327.1.tar.gz
+
+./config.sh --url https://github.com/SubbaRao-Gadamsetty/datascienseproject --token BVDPZJJWCTG4QSK6TB23EX3ITCIY4
+
+# Enter the name of runner : [self-hosted]
+./run.sh
+
+## Configure EC2 as self-hosted runner:
+
+## Setup github secrets:
+
+AWS_ACCESS_KEY_ID=
+
+AWS_SECRET_ACCESS_KEY=
+
+AWS_REGION = us-east-1
+
+AWS_ECR_LOGIN_URI = demo>>  566373416292.dkr.ecr.ap-south-1.amazonaws.com
+
+ECR_REPOSITORY_NAME = datascienseecr
+
+
 
 ################ ECR  SECOND TIME ################
 docker --version
@@ -148,7 +201,7 @@ dckr_pat_OKcIBCezgIgvSlpzDSiUx_A8tOg
 
 > Create EC2 instance + generate key value pairs
 
-	ec2-13-216-215-48.compute-1.amazonaws.com
+	ec2-3-91-86-132.compute-1.amazonaws.com
 
 > Generate new token in docker (
 
@@ -164,6 +217,6 @@ docker tag california-api subbaraogadamsetty/california-api:latest
 docker login
 docker push subbaraogadamsetty/california-api:latest
 
-ssh -i californiahousingkeypair.pem ec2-13-216-215-48.compute-1.amazonaws.com
+ssh -i californiahousingkeypair.pem ec2-3-91-86-132.compute-1.amazonaws.com
 docker pull subbaraogadamsetty/california-api:latest
 docker run -d -p 8080:8080 --name california-api subbaraogadamsetty/california-api:latest

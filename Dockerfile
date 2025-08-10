@@ -1,18 +1,10 @@
-# Use the official Python image from the Docker Hub
-FROM python:3.9-slim
-
-# Set the working directory
+FROM python:3.8-slim-buster
 WORKDIR /app
-
-# Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN apt update -y && apt install awscli -y
 
-# Make port 5050 available to the world outside this container
-EXPOSE 5050
+RUN pip install --upgrade pip
 
-# Run app.py when the container launches
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 unzip -y && pip install -r requirements.txt
 CMD ["python", "app.py"]
