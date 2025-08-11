@@ -161,6 +161,12 @@ ec2-54-81-168-84.compute-1.amazonaws.com
 
 #set uri in your local terminal and in your code 
 export MLFLOW_TRACKING_URI=http://ec2-54-81-168-84.compute-1.amazonaws.com:5000/
+
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_DEFAULT_REGION
+AWS_REGION
+
 ################ ECR  SECOND TIME ################
 docker --version
 docker ps
